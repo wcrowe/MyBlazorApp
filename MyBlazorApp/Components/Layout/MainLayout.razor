@@ -8,7 +8,7 @@
     <title>Blazor Bootstrap Layout</title>
     <base href="/" />
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css" />
-    <link rel="stylesheet" href="app.css" /> <!-- Changed from css/site.css -->
+    <link rel="stylesheet" href="app.css" /> <!-- Ensure this path is correct -->
     <link rel="stylesheet" href="MyBlazorApp.styles.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
@@ -16,10 +16,22 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
     <!-- Header -->
-    <header class="custom-header d-flex align-items-center px-3">
-        <div class="container d-flex justify-content-between align-items-center">
-            <img src="logo.svg" alt="Company Logo" class="logo">
-            <h1 class="header-title m-0">Website Title</h1>
+    <header>
+        <!-- Main header with gradient -->
+        <div class="header-main">
+            <div class="container">
+                <h1>Header</h1>
+            </div>
+        </div>
+        <!-- Login row -->
+        <div class="login-row">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12 text-end">
+                        <span>Logged in as: @CurrentUser</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -89,3 +101,14 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+@code {
+    string CurrentUser { get; set; } = "Guest";
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Simulate a user login
+        await Task.Delay(1000);
+        CurrentUser = "John Doe";
+    }
+}

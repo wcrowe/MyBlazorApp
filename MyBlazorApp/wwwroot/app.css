@@ -6,21 +6,39 @@ html, body {
     line-height: 2.0em;
 }
 
-.custom-header {
-    background-color: #0f2f54;
-    height: 140px;
-}
-
-.logo {
-    width: 175px;
-    height: 120px;
-    object-fit: contain;
-}
-
-.header-title {
+.header-main {
+    background: linear-gradient(135deg, #003087 0%, #ffffff 100%) !important;
     color: white;
-    font-size: 24px;
-    font-weight: bold;
+    padding: 1rem;
+    min-height: 150px; /* Taller for visibility */
+}
+
+.login-row {
+    background-color: #ffffff;
+    color: #333;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid #e0e0e0;
+}
+
+.main-content {
+    flex: 1 0 auto;
+}
+
+.top-section {
+    min-height: 100px;
+    background-color: #f8f9fa;
+}
+
+.left-section {
+    min-height: 500px;
+    background-color: #6c757d;
+    color: white;
+}
+
+.right-section {
+    min-height: 500px;
+    background-color: #17a2b8;
+    color: white;
 }
 
 .custom-footer {
@@ -49,25 +67,4 @@ html, body {
     color: rgb(149,149,149);
     font-size: 12px;
     margin-right: 5px;
-}
-
-.top-section {
-    min-height: 100px;
-    background-color: #f8f9fa;
-}
-
-.left-section {
-    min-height: 500px; /* Increased height */
-    background-color: #6c757d;
-    color: white;
-}
-
-.right-section {
-    min-height: 500px; /* Increased height */
-    background-color: #17a2b8;
-    color: white;
-}
-
-.main-content {
-    flex: 1 0 auto;
 }
