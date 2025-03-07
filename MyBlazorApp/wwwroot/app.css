@@ -57,17 +57,17 @@ html, body {
 }
 
 .left-section {
-    min-height: 300px;
+    min-height: 500px; /* Increased height */
     background-color: #6c757d;
     color: white;
 }
 
 .right-section {
-    min-height: 300px;
+    min-height: 500px; /* Increased height */
     background-color: #17a2b8;
     color: white;
 }
 
 .main-content {
-    flex: 1 0 auto; /* Ensures main grows to fill available space */
+    flex: 1 0 auto;
 }

@@ -1,0 +1,182 @@
+// Program.cs
+builder.Services.AddFluxor(o => 
+{
+    o.ScanTypes();
+    o.UseRouting();
+});
+
+// State.cs
+using Fluxor;
+
+public record AppState
+{
+    public bool ShowComponent1 { get; init; }
+    public bool ShowComponent2 { get; init; }
+    public bool ShowComponent3 { get; init; }
+    public string Component1Data { get; init; }
+    public string Component2Data { get; init; }
+    public string Component3Data { get; init; }
+}
+
+public class Feature : Feature<AppState>
+{
+    public override string GetName() => "App";
+    
+    protected override AppState GetInitialState() =>
+        new AppState 
+        { 
+            ShowComponent1 = true,
+            ShowComponent2 = false,
+            ShowComponent3 = false,
+            Component1Data = "Initial Data",
+            Component2Data = "",
+            Component3Data = ""
+        };
+}
+
+// Actions.cs
+public record UpdateComponent1Data(string Data);
+public record UpdateComponent2Data(string Data);
+public record UpdateComponent3Data(string Data);
+public record ToggleComponent1(bool Show);
+public record ToggleComponent2(bool Show);
+public record ToggleComponent3(bool Show);
+
+// Reducers.cs
+public static class Reducers
+{
+    [ReducerMethod]
+    public static AppState ReduceUpdateComponent1Data(AppState state, UpdateComponent1Data action) =>
+        state with { Component1Data = action.Data };
+
+    [ReducerMethod]
+    public static AppState ReduceUpdateComponent2Data(AppState state, UpdateComponent2Data action) =>
+        state with { Component2Data = action.Data };
+
+    [ReducerMethod]
+    public static AppState ReduceUpdateComponent3Data(AppState state, UpdateComponent3Data action) =>
+        state with { Component3Data = action.Data };
+
+    [ReducerMethod]
+    public static AppState ReduceToggleComponent1(AppState state, ToggleComponent1 action) =>
+        state with { ShowComponent1 = action.Show };
+
+    [ReducerMethod]
+    public static AppState ReduceToggleComponent2(AppState state, ToggleComponent2 action) =>
+        state with { ShowComponent2 = action.Show };
+
+    [ReducerMethod]
+    public static AppState ReduceToggleComponent3(AppState state, ToggleComponent3 action) =>
+        state with { ShowComponent3 = action.Show };
+}
+
+// Component1.razor
+@inject IDispatcher Dispatcher
+@inject IState<AppState> State
+
+@if (State.Value.ShowComponent1)
+{
+    <div>
+        <h3>Component 1</h3>
+        <p>Data: @State.Value.Component1Data</p>
+        <button @onclick="UpdateData">Update Component 2</button>
+    </div>
+}
+
+@code {
+    private void UpdateData()
+    {
+        Dispatcher.Dispatch(new UpdateComponent2Data($"Data from Comp1: {DateTime.Now}"));
+        Dispatcher.Dispatch(new ToggleComponent2(true));
+    }
+}
+
+// Component2.razor
+@inject IDispatcher Dispatcher
+@inject IState<AppState> State
+
+@if (State.Value.ShowComponent2)
+{
+    <div>
+        <h3>Component 2</h3>
+        <p>Data: @State.Value.Component2Data</p>
+        <button @onclick="UpdateData">Update Component 3</button>
+    </div>
+}
+
+@code {
+    private void UpdateData()
+    {
+        Dispatcher.Dispatch(new UpdateComponent3Data($"Data from Comp2: {DateTime.Now}"));
+        Dispatcher.Dispatch(new ToggleComponent3(true));
+    }
+}
+
+// Component3.razor
+@inject IState<AppState> State
+
+@if (State.Value.ShowComponent3)
+{
+    <div>
+        <h3>Component 3</h3>
+        <p>Data: @State.Value.Component3Data</p>
+    </div>
+}
+
+// Home.razor
+@page "/"
+
+<Component1 />
+<Component2 />
+<Component3 />
+
+Key points about this implementation:
+
+State Management: Uses Fluxor to maintain a single source of truth with AppState
+
+Component Visibility: Each component checks its respective ShowComponentX boolean
+
+Data Flow: 
+Component1 starts visible and can trigger Component2
+
+Component2 can trigger Component3
+
+Each component passes data to the next
+
+Independence: Components can be shown/hidden independently via the state
+
+Type Safety: Uses records for immutable state
+
+To use this:
+
+Add Fluxor initialization in Program.cs
+
+Create the state, actions, and reducers in separate files
+
+Create each component as shown
+
+The components will appear/disappear based on the state and user interactions
+
+Optional enhancements you might consider:
+
+csharp
+
+// Add effects for async operations
+public class Effects
+{
+    [EffectMethod]
+    public async Task HandleUpdateComponent1Data(UpdateComponent1Data action, IDispatcher dispatcher)
+    {
+        // Add async operations here if needed
+        await Task.CompletedTask;
+    }
+}
+
+// Add more complex visibility logic
+public record AppState
+{
+    // ... existing properties
+    public bool CanShowComponent2 => !string.IsNullOrEmpty(Component1Data);
+    public bool CanShowComponent3 => !string.IsNullOrEmpty(Component2Data);
+}
+
